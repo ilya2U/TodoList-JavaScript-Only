@@ -42,6 +42,7 @@ body {
     padding: 8px 16px 8px 16px;
     border: 1px solid var(--border);
     border-radius: 5px;
+    font-family: Inter;
     width: 595px;
     height: 38px;
     box-sizing: border-box;
@@ -136,7 +137,7 @@ body {
     flex-direction: column;
     border-radius: 12px;
     background-color: var(--background-color);
-    width: 500px; 
+    min-width: 500px; 
     border: 1px solid #fff;
     min-height: 289px;
     align-items: center;
@@ -156,6 +157,7 @@ body {
 }
 
 .add-input{
+    position: relative;
     color: var(--color);
     background-color: var(--background-color);
     margin-top: 25px;
@@ -169,10 +171,11 @@ body {
 .button-container{
     width: 100%;
     margin-top: 128px;
+    margin-bottom: 18px;
     display: flex;
 }
 
-.close-btn{
+.task-add-close-btn{
     background-color: var(--background-color);
     color: #6C63FF;
     border: 1px solid #6C63FF;
@@ -185,9 +188,10 @@ body {
     line-height: 18px;
     margin-left: 30px;
     margin-right: 233px;
+    cursor: pointer;
 }
 
-.apply-btn{
+.task-add-apply-btn{
     background-color: #6C63FF;
     color: white;
     border: 1px solid #6C63FF;
@@ -198,11 +202,13 @@ body {
     font-size: 18px;
     font-weight: 500;
     line-height: 18px;
-    margin-right: 30px
+    margin-right: 30px;
+    cursor: pointer;
 }
 
 .todo-item {
-    margin: 30px auto;
+    /* margin: 30px auto; */
+    margin-top: 30px;
     max-width: 525px;
     width: 100%;
     height: 60px;
@@ -276,14 +282,18 @@ body {
     margin-left: 10px;
 }
 
-.edit-input {
+.edit-task-input {
+    position: relative;
     border-radius: 5px;
-    padding: 8px 16px 8px 16px;
+    padding: 0 10px;
     border: 1px solid var(--border);
     background-color: var(--background-color);
     color: var(--color);
     font-size: 20px;
-    width: 300px;
+    width: 270px;
+    font-family: Kanit;
+    font-weight: 500;
+    line-height: 20px;
 }
 
 .save-button, .cancel-button {
@@ -527,4 +537,25 @@ margin-left: 16px;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 90;
+}
+
+.input-error-message {
+    color: red;
+    font-size: 14px;
+}
+
+.edit-task-input-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-error-message {
+    color: red;
+    font-size: 12px;
+    position: absolute;
+    margin-top: 38px;
+}
+
+.input-error {
+    border: 1px solid red;
 }

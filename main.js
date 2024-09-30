@@ -1,7 +1,7 @@
 const addButton = document.querySelector('.add-button');  
 const addTaskModal = document.querySelector('.add-task-modal');           
-const closeModalButton = document.querySelector('.close-btn'); 
-const applyButton = document.querySelector('.apply-btn');
+const closeModalButton = document.querySelector('.task-add-close-btn'); 
+const applyButton = document.querySelector('.task-add-apply-btn');
 const addInput = document.querySelector('.add-input');
 const todoListContainer = document.querySelector('.todo-list'); 
 const searchInput = document.querySelector('.search-input');
@@ -68,19 +68,28 @@ filterSelect.addEventListener('change', () => {
 
 function addTodo() {
     const value = addInput.value.trim();
+    let errorSpan = document.querySelector('.input-error-message');
+    if (!errorSpan) {
+        errorSpan = document.createElement('span');
+        errorSpan.classList.add('input-error-message');
+        addInput.insertAdjacentElement('afterend', errorSpan);
+    }
     if (value.length < 3) { 
-        addInput.placeholder = 'Не менее трех символов!'; 
         addInput.classList.add('input-error'); 
-        addInput.value = ''
+        errorSpan.textContent = 'Input must contain more than three characters.';
+        errorSpan.style.display = 'block'; 
         return; 
     }
     addInput.classList.remove('input-error');
+    errorSpan.style.display = 'none'; 
+
     if (value) {
         const newTodo = {
             id: Date.now(), 
             text: value,
             done: false
         };
+
         todoList.push(newTodo);
         updateCurrentTaskList(todoList);
         updateAllTasksList(newTodo); 
@@ -124,9 +133,9 @@ function addTodo() {
         todoListContainer.appendChild(todoItem);
         todoListContainer.appendChild(todoItemBorderLine);
 
-        const emptyTodoBlock = document.querySelector('.empty-todo-list');
-        if (emptyTodoBlock) {
-            emptyTodoBlock.style.display = 'none';
+        const emptyTodoList = document.querySelector('.empty-todo-list');
+        if (emptyTodoList) {
+            emptyTodoList.style.display = 'none';
         }
 
         addInput.value = '';
@@ -141,12 +150,12 @@ function renderTodoList() {
     todoListContainer.innerHTML = '';
     const filter = filterSelect.value;  
     const searchText = searchInput.value.toLowerCase();  
-    const emptyTodoBlock = document.querySelector('.empty-todo-list');
+    const emptyTodoList = document.querySelector('.empty-todo-list');
     if(!todoList.length) {
-        emptyTodoBlock.style.display = 'block';
+        emptyTodoList.style.display = 'block';
         return;  
     } else {
-        emptyTodoBlock.style.display = 'none';
+        emptyTodoList.style.display = 'none';
     }
 
     todoList
@@ -227,9 +236,9 @@ function deleteTodoItem(id) {
         updateCurrentTaskList(todoList); 
         updateTaskCounters(todoList); 
         appearanceTodoCounter(); 
-        const emptyTodoBlock = document.querySelector('.empty-todo-list');
-        if (emptyTodoBlock && !todoList.length) {
-            emptyTodoBlock.style.display = 'block';
+        const emptyTodoList = document.querySelector('.empty-todo-list');
+        if (emptyTodoList && !todoList.length) {
+            emptyTodoList.style.display = 'block';
         }
     }
 }
@@ -241,10 +250,15 @@ function handleEditTask(todo) {
     const deleteIcon = todoItem.querySelector('.delete-todo-icon');
     editIcon.style.display = 'none';
     deleteIcon.style.display = 'none';
+
     const editInput = document.createElement('input');
     editInput.type = 'text';
     editInput.value = todo.text;
-    editInput.classList.add('edit-input');
+    editInput.classList.add('edit-task-input');
+
+    const editContainer = document.createElement('div');
+    editContainer.classList.add('edit-task-input-container');
+    editContainer.appendChild(editInput);
 
     const saveButton = document.createElement('button');
     saveButton.textContent = 'Save';
@@ -255,16 +269,18 @@ function handleEditTask(todo) {
     cancelButton.textContent = 'Cancel';
     cancelButton.classList.add('cancel-button');
     cancelButton.addEventListener('click', () => {
-        todoItem.replaceChild(textElement, editInput);
-        todoItem.querySelector('.save-button').remove();
-        todoItem.querySelector('.cancel-button').remove();
-        const editIcon = todoItem.querySelector('.edit-todo-icon');
-        const deleteIcon = todoItem.querySelector('.delete-todo-icon');
+        const errorSpan = editContainer.querySelector('.edit-error-message');
+        if (errorSpan) {
+            errorSpan.remove();
+        }
+        todoItem.replaceChild(textElement, editContainer);
+        saveButton.remove();
+        cancelButton.remove();
         editIcon.style.display = 'block';
         deleteIcon.style.display = 'block';
     });
 
-    todoItem.replaceChild(editInput, textElement);
+    todoItem.replaceChild(editContainer, textElement);
     todoItem.appendChild(saveButton); 
     todoItem.appendChild(cancelButton);
     editInput.focus();
@@ -272,29 +288,43 @@ function handleEditTask(todo) {
 
 function saveTodoText(id, newText) {
     const todo = todoList.find(t => t.id === id);
-    const editInput = document.querySelector('.edit-input');
-    if (newText.trim().length < 3) { 
-        editInput.placeholder = 'Не менее трех символов!'; 
-        editInput.classList.add('input-error'); 
-        editInput.value = ''
-        return; 
+    const todoItem = document.querySelector(`[data-id="${id}"]`);
+    const editInput = todoItem.querySelector('.edit-task-input');
+    const editContainer = todoItem.querySelector('.edit-task-input-container');
+    
+    let errorSpan = editContainer.querySelector('.edit-error-message');
+    if (!errorSpan) {
+        errorSpan = document.createElement('span');
+        errorSpan.classList.add('edit-error-message');
+        editContainer.appendChild(errorSpan);
     }
+
+    if (newText.trim().length < 3) {
+        editInput.classList.add('input-error');
+        errorSpan.textContent = 'Task must contain more than three characters.';
+        return;
+    }
+
     editInput.classList.remove('input-error');
+    errorSpan.textContent = '';
+
     if (todo) {
         todo.text = newText;
-        const todoItem = document.querySelector(`[data-id="${id}"]`);
         const todoText = document.createElement('span');
         const todoIndex = todoList.findIndex(t => t.id === id);
         todoText.textContent = `${newText} #${todoIndex + 1}`;
         todoText.classList.add(todo.done ? 'todo-item-done' : 'todo-item-active');
+
         const editIcon = todoItem.querySelector('.edit-todo-icon');
         const deleteIcon = todoItem.querySelector('.delete-todo-icon');
         editIcon.style.display = 'block';
         deleteIcon.style.display = 'block';
 
-        todoItem.replaceChild(todoText, editInput);
+        todoItem.replaceChild(todoText, editContainer);
+
         todoItem.querySelector('.save-button').remove();
         todoItem.querySelector('.cancel-button').remove();
+
         updateCurrentTaskList(todoList);
     }
 }
@@ -404,9 +434,9 @@ applyDeleteAllTodos.addEventListener('click', () => {
     deleteAllCurrentTasks(todoList);
     todoList.length = 0;
     updateTaskCounters(todoList);
-    const emptyTodoBlock = document.querySelector('.empty-todo-list');
-    if (emptyTodoBlock) {
-        emptyTodoBlock.style.display = 'block';
+    const emptyTodoList = document.querySelector('.empty-todo-list');
+    if (emptyTodoList) {
+        emptyTodoList.style.display = 'block';
     }
     appearanceTodoCounter();
     deleteAllTasksModal.style.display = 'none';
