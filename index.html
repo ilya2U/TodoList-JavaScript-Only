@@ -3,67 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Kanit:wght@400;700&display=swap" rel="stylesheet">
     <title>TODO LIST</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-    <div class="fixed-info-block">
-        <div id='total-tasks' class="fixed-information-span"> Общее количество задач: 0</div>
-        <div class="purple-line-info-block"></div>
-        <div id='current-task' class="fixed-information-span">Количество текущих задач: 0</div>
-        <div class="purple-line-info-block"></div>
-        <div id='deleted-tasks' class="fixed-information-span">Количество удаленных задач: 0</div>
+    <div class="task-statisticts task-statisticts-hidden">
+        <div class="task-statisticts-total"> Общее количество задач: 0</div>
+        <div class="task-statisticts-purple-line"></div>
+        <div class="task-statisticts-active">Активных задач: 0</div>
+        <div class="task-statisticts-purple-line"></div>
+        <div class="task-statisticts-completed">Выполненые задачи: 0
+        </div>
     </div>
 <div class="container">
     <div class="head">
         <div class="todo-list-text"> TODO LIST</div>
         <div class = "header">
-
-            <div class="modal" id="modal">
-                <div class="modal__content">
-                    <div class="new-note">NEW NOTE</div>
+            <div class="delete-all-tasks-modal-overlay"></div>
+            <div class="delete-all-tasks-modal">
+                <div class="delete-all-tasks-modal-title">Are you sure that you want to remove all your tasks?</div>
+                <div class="delete-all-tasks-modal-btn-container">
+                  <button class="delete-all-tasks-modal-close-btn">CANCEL</button>
+                  <button class="delete-all-tasks-modal-apply-btn">APPLY</button>
+                </div>
+              </div>
+            <div class="add-task-modal">
+                <div class="add-task-modal-content">
+                    <div class="add-task-modal-title">NEW NOTE</div>
                     <input type="text" class="add-input" placeholder="Input your note...">
                     <div class="button-container">
-                        <button class="close-btn">CANCEL</button>
-                        <button class="apply-btn">APPLY</button>
+                        <button class="task-add-close-btn">CANCEL</button>
+                        <button class="task-add-apply-btn">APPLY</button>
                     </div>
                 </div>
             </div>
             <div class="counter-todo-items"></div>
             <input type="text" placeholder="Search note..." class="search-input">
 
-            <select name="filter" id="filter" class="filter-select-todos">
+            <select name="filter" class="filter-select-todos">
                 <option value="all">ALL</option>
                 <option value="completed">Completed</option>
                 <option value="active">Active</option>
             </select>
 
-            <div class="switch-theme" id="themeSwitcher">
-                <img src="/public/icons/light-theme-icon.svg" class="icon-theme" id="themeIcon" alt="theme icon">
+            <div class="switch-theme">
+                <img src="/public/icons/light-theme-icon.svg" class="icon-theme" alt="theme switch icon">
             </div>
-
-            <div>
-                <img src="/public/icons/delete-todo-icon.svg" alt="delete" class="delete-icon">
-            </div>
-            
-            
+            <img src="/public/icons/delete-todo-icon.svg" alt="delete todo icon" class="delete-icon">
         </div>
     </div>
-
     <div class="body">
-        <div class="todo-list" id="todoList"></div>
+        <div class="todo-list"></div>
 
-        <div class="empty-todo-list-block">
+        <div class="empty-todo-list">
             <img src="/public/icons/empty-todo-list-icon.svg" alt="Empty Todo List" class="empty-todo-list-icon">
             <div class='emty-todo-list-text'> Empty...</div>
         </div>
-
-        </div>
-        <div class="add-button">
-            <img src="/public/icons/add-todo-icon.svg" alt="add" class="plus-button">
     </div>
-
-
+    <div class="add-button">
+        <img src="/public/icons/add-todo-icon.svg" alt="add todo icon" class="plus-button">
+    </div>
 </div>
 <script src="main.js"></script>
 </body>
